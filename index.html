@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Diaries</title>
+    <!-- Google Fonts for a friendly, educational, and kid-friendly style -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0b061a;
+            --primary: #7928ca;
+            --secondary: #ff007f;
+            --accent: #00dfd8;
+            --yellow: #ffb800;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #2d1b4e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', 'Quicksand', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b061a 0%, #1f0d3d 50%, #29114d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background decorative stars */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, var(--accent), rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 50px 160px, var(--yellow), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, var(--secondary), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 160px 120px, var(--accent), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HOME SCREEN */
+        #home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .main-title {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--yellow), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 20px rgba(255, 0, 127, 0.4);
+            margin-bottom: 20px;
+            animation: floatTitle 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatTitle {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #dcd0ff;
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--secondary), #ff4b2b);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 0, 127, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.08) rotate(-2deg);
+            box-shadow: 0 15px 35px rgba(255, 0, 127, 0.8);
+        }
+
+        /* ROOMS SCREEN */
+        #rooms-screen {
+            display: none;
+            padding: 30px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2.8rem;
+            color: var(--yellow);
+            text-shadow: 0 3px 10px rgba(255, 184, 0, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .room-card {
+            background: linear-gradient(145deg, #2e1a47, #1a0b2e);
+            border: 4px solid var(--accent);
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 223, 216, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: var(--secondary);
+            box-shadow: 0 15px 35px rgba(255, 0, 127, 0.4);
+        }
+
+        .room-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounceIcon 2s infinite;
+        }
+
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .room-card h3 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .room-card p {
+            color: #dcd0ff;
+            font-size: 1rem;
+        }
+
+        /* STORIES SELECTION SCREEN */
+        #stories-screen {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid var(--accent);
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: var(--bg-deep);
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .story-card {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 4px solid var(--yellow);
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 184, 0, 0.5);
+        }
+
+        .story-img-container {
+            width: 100%;
+            height: 220px;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .story-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .story-card:hover .story-img-container img {
+            transform: scale(1.1);
+        }
+
+        .story-card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .story-card h4 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .story-card p {
+            font-size: 0.95rem;
+            color: #4a3b6c;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .btn-read {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .story-card:hover .btn-read {
+            background: var(--secondary);
+        }
+
+        /* READER SCREEN */
+        #reader-screen {
+            display: none;
+            padding: 20px 0;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reader-box {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: 35px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            border: 6px solid var(--accent);
+        }
+
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .reader-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .font-btn {
+            background: var(--accent);
+            color: var(--bg-deep);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .font-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .reader-image-banner {
+            width: 100%;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 3px solid var(--yellow);
+            background: #000;
+        }
+
+        .reader-image-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-text-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #332255;
+        }
+
+        .story-text-content p {
+            margin-bottom: 20px;
+        }
+
+        /* Explorer Passport / Floating Footer */
+        .explorer-badge-bar {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px dashed var(--yellow);
+        }
+
+        .badge-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--yellow);
+        }
+
+        @media(max-width: 768px) {
+            .main-title { font-size: 2.8rem; }
+            .reader-box { padding: 20px; }
+            .reader-title { font-size: 1.8rem; }
+            .reader-image-banner { height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <div class="container">
+
+        <!-- 1. HOME SCREEN -->
+        <div id="home-screen">
+            <h1 class="main-title">🚀 Space Diaries 🌌</h1>
+            <p class="subtitle">Embark on an unforgettable cosmic adventure and discover the secret stories of spacecraft and probes!</p>
+            <button class="btn-start" onclick="goToRooms()">
+                <span>Start Exploration</span> 🛸
+            </button>
+        </div>
+
+        <!-- 2. ROOMS SCREEN -->
+        <div id="rooms-screen">
+            <div class="section-header">
+                <h2>Choose an Exploration Room</h2>
+                <p class="subtitle" style="margin: 0 auto; font-size: 1.2rem;">Which corner of the universe shall we travel to today?</p>
+            </div>
+            
+            <div class="rooms-grid">
+                <div class="room-card" onclick="openRoom('luna')">
+                    <span class="room-icon">🌙</span>
+                    <h3>The Moon</h3>
+                    <p>Lunar modules and robotic explorers of our natural satellite.</p>
+                </div>
+                <div class="room-card" onclick="openRoom('marte')">
+                    <span class="room-icon">🔴</span>
+                    <h3>Mars</h3>
+                    <p>Rovers, landers, and helicopters on the Red Planet.</p>
+                </div>
+                <div class="room-card" onclick="openRoom('asteroides')">
+                    <span class="room-icon">☄️</span>
+                    <h3>Asteroids</h3>
+                    <p>Daring missions onto giant floating space rocks.</p>
+                </div>
+                <div class="room-card" onclick="openRoom('mas_alla')">
+                    <span class="room-icon">🌌</span>
+                    <h3>Beyond Mars and the Moon</h3>
+                    <p>Faraway journeys toward dwarf planets, gas giants, and exoplanets.</p>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="goToHome()">⬅ Back to Home</button>
+        </div>
+
+        <!-- 3. STORY SELECTION SCREEN -->
+        <div id="stories-screen">
+            <button class="back-btn" onclick="goToRooms()">⬅ Back to Rooms</button>
+            <div class="section-header">
+                <h2 id="room-title-heading">Room</h2>
+                <p class="subtitle" id="room-subtitle-heading" style="margin: 0 auto; font-size: 1.1rem;"></p>
+            </div>
+            <div class="stories-grid" id="stories-grid-container">
+                <!-- Dynamically injected -->
+            </div>
+        </div>
+
+        <!-- 4. STORY READER SCREEN -->
+        <div id="reader-screen">
+            <button class="back-btn" onclick="backToStories()">⬅ Back to Room</button>
+            <div class="reader-box">
+                <div class="reader-header">
+                    <h2 class="reader-title" id="reader-story-title">Story Title</h2>
+                    <div class="font-controls">
+                        <button class="font-btn" onclick="changeFontSize(-2)" title="Decrease font">A-</button>
+                        <button class="font-btn" onclick="changeFontSize(2)" title="Increase font">A+</button>
+                    </div>
+                </div>
+                
+                <div class="reader-image-banner" id="reader-image-container">
+                    <!-- Official image for the story -->
+                </div>
+
+                <div class="story-text-content" id="reader-text-container">
+                    <!-- Story paragraphs -->
+                </div>
+
+                <div class="explorer-badge-bar">
+                    <span class="badge-info">⭐ You're doing great, little explorer!</span>
+                    <button class="btn-read" onclick="backToStories()">Finish reading 🚀</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // DATABASE OF STORIES WITH OFFICIAL IMAGES FROM THE USER DOCUMENTS
+        const ROOMS_DATA = {
+            luna: {
+                title: "Room: The Moon 🌙",
+                subtitle: "The spacecraft that crossed space to touch the lunar soil for the very first time.",
+                stories: [
+                    {
+                        id: 'eagle',
+                        título: 'Eagle',
+                        etiqueta: 'Lunar Module • Apollo 11',
+                        resumen: 'The bottom part of the lunar module that carried Neil Armstrong and Buzz Aldrin to walk on the Moon for the first time.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=800" alt="Eagle">',
+                        párrafos: [
+                            "Hello, little friends! Do you know who I am? I am a part of Eagle, the Apollo 11 lunar module! A spacecraft that traveled from Earth to the Moon to help two astronauts fulfill a dream: walking for the first time on our natural satellite!",
+                            "But... what is a lunar module? It is a special spacecraft built to carry astronauts from a ship orbiting the Moon down to its surface and then help them return.",
+                            "NASA scientists sent me on July 16, 1969, along with my fellow astronauts Neil Armstrong, Buzz Aldrin, and Michael Collins. Our mission was to reach the Moon, explore it, and bring back samples of its rocks and soil to better understand what it was like.",
+                            "And do you know what my job was? I was the bottom part of Eagle! I had landing legs, an engine, and fuel to help descend smoothly. My partner, the ascent stage, carried the astronauts inside its cabin.",
+                            "On July 20, 1969, we successfully landed in a place called the Sea of Tranquility. What a thrill! Neil Armstrong and Buzz Aldrin climbed down a little ladder and walked on the Moon. They were fulfilling a dream that seemed impossible!",
+                            "But the time to return home arrived... And do you know what happened to me? I stayed on the Moon. My upper part took off using my structure as a launching pad, carrying the astronauts back to Michael Collins.",
+                            "Did I feel sad? Just a little bit... but I knew I could still help. I left scientific instruments on the lunar surface. One of them was a special small mirror that reflected laser beams sent from Earth. This way, scientists could measure the distance between our planet and the Moon with great precision!",
+                            "Instruments also remained to study small moonquakes, dust, and solar wind.",
+                            "Although my adventure ended many years ago, the instruments and samples we left behind continue to provide information to understand the Moon and prepare for future explorations.",
+                            "And remember, little explorers: not all heroes return home. Some stay along the way, leaving something wonderful so others can keep discovering. I stayed on the Moon, but a part of my story still reaches Earth!"
+                        ]
+                    },
+                    {
+                        id: 'falcon',
+                        título: 'FALCON',
+                        etiqueta: 'Apollo 15 • Lunar Rover',
+                        resumen: 'Traveled with Apollo 15 to explore the Apennine Mountains and debut the lunar electric car.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=800" alt="Falcon">',
+                        párrafos: [
+                            "Hello, little friends! Do you know who I am? I am Falcon! A lunar module that traveled from Earth to the Moon to help two astronauts explore it and discover its secrets.",
+                            "But... what is a lunar module? It is a special spacecraft used to carry astronauts from a ship around the Moon down to its surface and help them return!",
+                            "NASA scientists sent me on July 26, 1971, along with three astronauts: David Scott, James Irwin, and Alfred Worden. Our mission was to study the mountains, rocks, and lunar soil to understand what the Moon was like inside and out.",
+                            "And do you know what made me special? I carried a small car called the Lunar Rover! It was an electric vehicle that allowed astronauts to travel greater distances and explore places far from where we landed.",
+                            "On July 30, 1971, I managed to land near huge mountains called the Apennines. What excitement! My friends David and James went out to explore, rode in the small car, and collected over 170 pounds of rocks and lunar samples.",
+                            "But my mission had something even more important: I also carried a small scientific laboratory called ALSEP! It remained installed on the Moon to study moonquakes, magnetic field, dust, and internal heat.",
+                            "On August 2, 1971, the upper part of my spacecraft took off to take the astronauts back home. I stayed there, along with the laboratory and our beloved Lunar Rover.",
+                            "And remember, little explorers: we don't always have to return to leave an important mark. Sometimes, the most beautiful thing about an adventure is everything we leave behind so others can keep learning!"
+                        ]
+                    },
+                    {
+                        id: 'intrepid',
+                        título: 'Intrepid',
+                        etiqueta: 'Apollo 12 • Ocean of Storms',
+                        resumen: 'Explored the Ocean of Storms and found the ancient Surveyor 3 spacecraft.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800" alt="Intrepid">',
+                        párrafos: [
+                            "Hello, little friends! Do you know who I am? I am Intrepid! A spacecraft that traveled from Earth to the Moon on the Apollo 12 mission on November 14, 1969.",
+                            "My big mission was to take my friends, Pete Conrad and Alan Bean, to the Moon. On November 19, we landed in a lunar region called the Ocean of Storms! And there my friends visited an old spacecraft called Surveyor 3 that had arrived two years earlier.",
+                            "Can you imagine finding an abandoned ship in another world? It was like discovering a space treasure!",
+                            "My friends also set up a small laboratory called ALSEP to study movements, soil, magnetic field, and solar particles. After exploring for hours, on November 20, 1969, I took off with Conrad and Bean on board to rejoin the mother ship.",
+                            "And do you know what happened next? I was separated from the ship and ended up crashing into the lunar surface to create a small moonquake and measure the vibrations with our instruments. We discovered vibrations continued for about 55 minutes!",
+                            "And remember, little explorers: sometimes even our final effort can become the beginning of a great discovery."
+                        ]
+                    },
+                    {
+                        id: 'surveyor3',
+                        título: 'Surveyor 3',
+                        etiqueta: 'Robotic Explorer • 1967',
+                        resumen: 'Small robotic explorer with a camera and mechanical arm that awaited the visit of Apollo 12.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800" alt="Surveyor 3">',
+                        párrafos: [
+                            "Hello, little friends! Do you know who I am? I am Surveyor 3! A small robotic explorer that traveled from Earth to the Moon on April 17, 1967.",
+                            "NASA scientists sent me because they wanted to know if the lunar soil was firm enough to support a spacecraft. I carried a camera and a small mechanical arm to dig the lunar ground!",
+                            "On April 20, I landed in the Ocean of Storms. My thrusters didn't shut off when they should have and I bounced twice before settling down. What a scare!",
+                            "I took over 6,000 photos and proved the soil could support a lunar module. On November 19, 1969, Apollo 12 astronauts Pete Conrad and Alan Bean landed nearby and came to visit me, taking some of my parts back to Earth!",
+                            "Remember, little explorers: never think you are too small to do something important. I was a tiny robot that helped humans land more safely."
+                        ]
+                    }
+                ]
+            },
+            marte: {
+                title: "Room: Mars 🔴",
+                subtitle: "The Red Planet explored by brave wheeled robots and flying helicopters.",
+                stories: [
+                    {
+                        id: 'sojourner',
+                        título: 'Sojourner Rover',
+                        etiqueta: 'First Mars Rover • 1997',
+                        resumen: 'Small six-wheeled vehicle that proved robotic exploration on Mars was possible.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=800" alt="Sojourner">',
+                        párrafos: [
+                            "Hello, Earth! My name is Sojourner. I may not look like much because I weigh only 10.6 kilograms... but I have a huge mission!",
+                            "Created by NASA with six wheels, cameras, and an APXS instrument to analyze rocks. My name means traveler, named after civil rights activist Sojourner Truth.",
+                            "On July 4, 1997, I landed on Mars using a parachute and massive airbags that bounced multiple times across the Martian surface.",
+                            "I approached rocks like Barnacle Bill and Yogi to study their geological history. Although planned for a month, I worked for nearly three months, paving the way for future rovers."
+                        ]
+                    },
+                    {
+                        id: 'spirit_opportunity',
+                        título: 'Spirit & Opportunity',
+                        etiqueta: 'Twin Rovers • 2004',
+                        resumen: 'Twin robotic explorers that searched for evidence of liquid water on the Red Planet.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=800" alt="Spirit & Opportunity">',
+                        párrafos: [
+                            "SPIRIT: Hello, Earth! I am Spirit.",
+                            "OPPORTUNITY: And I am Opportunity! Although different, we shared one mission: discovering the secrets of Mars and investigating if water ever existed there.",
+                            "Equipped with six wheels, cameras, a robotic arm, and solar panels, we landed in January 2004 using heat shields, parachutes, and airbags at Gusev Crater and Meridiani Planum.",
+                            "Though expected to work only 90 days, we explored for years, finding signs of past liquid water. We proved that small explorers can achieve great things!"
+                        ]
+                    },
+                    {
+                        id: 'viking1',
+                        título: 'Viking 1',
+                        etiqueta: 'Orbiter & Lander • 1976',
+                        resumen: 'The first US lander to successfully touch down on Mars and send color pictures.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800" alt="Viking 1">',
+                        párrafos: [
+                            "VIKING 1: Hello, Earth! I am Viking 1 and I have a very special mission. Together with Viking Orbiter, we worked as a team.",
+                            "The orbiter studied Mars from space while I targeted a safe landing site. On July 20, 1976, I successfully landed on Mars!",
+                            "I sent my first picture 25 seconds after landing and captured panoramic color photos of the Martian surface, operating for over six Earth years."
+                        ]
+                    },
+                    {
+                        id: 'ingenuity',
+                        título: 'INGENUITY',
+                        etiqueta: 'Robotic Helicopter • 2021',
+                        resumen: 'The first helicopter to perform a powered, controlled flight on another planet.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800" alt="Ingenuity">',
+                        párrafos: [
+                            "Hello, little friends! I am Ingenuity! A tiny robotic helicopter that traveled from Earth to Mars.",
+                            "My mission was to prove that a helicopter could fly in a place with very thin air. Powered by dual counter-rotating blades and solar energy, I completed 72 flights!",
+                            "Though my flight adventures ended in January 2024, my data helps scientists plan future missions. Never stop asking, imagining, and discovering!"
+                        ]
+                    }
+                ]
+            },
+            asteroides: {
+                title: "Room: Asteroids ☄️",
+                subtitle: "Space missions that chased floating rocks across the solar system.",
+                stories: [
+                    {
+                        id: 'near_shoemaker',
+                        título: 'NEAR Shoemaker',
+                        etiqueta: 'Orbit & Landing on Eros',
+                        resumen: 'First spacecraft to orbit and touch down smoothly on an asteroid.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800" alt="NEAR Shoemaker">',
+                        párrafos: [
+                            "Hello, little friends! I am NEAR Shoemaker! A robotic spacecraft that traveled millions of kilometers to visit an enormous asteroid named Eros.",
+                            "NASA scientists sent me on February 17, 1996. On February 14, 2000, I became the first spacecraft in history to orbit an asteroid!",
+                            "From orbit, I mapped craters and mountains. Then, on February 12, 2001, I made a historic gentle touchdown directly onto Eros's surface, surviving to send data for two more weeks!",
+                            "My story proves that even a small spacecraft can achieve something giant when it has a great mission."
+                        ]
+                    }
+                ]
+            },
+            mas_alla: {
+                title: "Room: Beyond Mars and the Moon 🌌",
+                subtitle: "Faraway journeys toward the asteroid belt, gas giants, and distant exoplanets.",
+                stories: [
+                    {
+                        id: 'nave_dawn',
+                        título: 'Dawn Spacecraft',
+                        etiqueta: 'Vesta & Ceres • Ion Propulsion',
+                        resumen: 'Ion-powered space explorer that visited two ancient worlds in the asteroid belt.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800" alt="Dawn Spacecraft">',
+                        párrafos: [
+                            "Hello, Earth! I am Dawn, an exploratory spacecraft with an extraordinary mission: visiting the asteroid belt to uncover secrets of Vesta and Ceres.",
+                            "Equipped with advanced ion propulsion engines that accelerate xenon particles for constant thrust, I launched in September 2007.",
+                            "I orbited protoplanet Vesta in 2011 and dwarf planet Ceres in 2015, capturing maps and data before finishing my mission in 2018 to remain orbiting Ceres forever."
+                        ]
+                    },
+                    {
+                        id: 'pioneer10',
+                        título: 'PIONEER 10',
+                        etiqueta: 'Journey to Jupiter • 1972',
+                        resumen: 'Robot spacecraft that crossed the asteroid belt and visited giant Jupiter.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=800" alt="Pioneer 10">',
+                        párrafos: [
+                            "Hello, little friends! I am Pioneer 10! A robotic spacecraft launched on March 2, 1972, to explore Jupiter and venture beyond Mars.",
+                            "I safely crossed the asteroid belt and captured 500 stunning photos of Jupiter's clouds and moons. I also carried a gold plaque depicting a man, a woman, and our solar system for any intelligent beings to find!",
+                            "My mission was supposed to last 21 months, but I kept working for over 30 years as I journeyed deeper into the cosmos."
+                        ]
+                    },
+                    {
+                        id: 'kepler',
+                        título: 'KEPLER',
+                        etiqueta: 'Space Telescope • Exoplanets',
+                        resumen: 'Telescope that gazed at distant stars to discover thousands of alien worlds.',
+                        imagen: '<img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800" alt="Kepler">',
+                        párrafos: [
+                            "Hello, little friends! I am Kepler! A space telescope launched on March 6, 2009, to search for planets outside our solar system called exoplanets.",
+                            "By watching distant stars and detecting the tiny dimming of light when a planet passed in front of them, I helped discover over 2,600 new worlds!",
+                            "The universe is huge with countless mysteries left to uncover. Perhaps one day one of you will find a planet no one has ever seen before!"
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentRoomKey = '';
+        let currentStoryId = '';
+        let currentFontSize = 1.2; // rem
+
+        // SCREEN NAVIGATION
+        function goToHome() {
+            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('rooms-screen').style.display = 'none';
+            document.getElementById('stories-screen').style.display = 'none';
+            document.getElementById('reader-screen').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function goToRooms() {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('rooms-screen').style.display = 'block';
+            document.getElementById('stories-screen').style.display = 'none';
+            document.getElementById('reader-screen').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function openRoom(roomKey) {
+            currentRoomKey = roomKey;
+            const roomData = ROOMS_DATA[roomKey];
+            
+            document.getElementById('room-title-heading').innerText = roomData.title;
+            document.getElementById('room-subtitle-heading').innerText = roomData.subtitle;
+
+            const gridContainer = document.getElementById('stories-grid-container');
+            gridContainer.innerHTML = '';
+
+            roomData.stories.forEach(story => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.onclick = () => openStory(story.id);
+
+                card.innerHTML = `
+                    <div class="story-img-container">
+                        ${story.imagen}
+                    </div>
+                    <div class="story-card-content">
+                        <div>
+                            <span style="font-size: 0.85rem; font-weight: 700; color: var(--secondary); text-transform: uppercase;">${story.etiqueta}</span>
+                            <h4 style="margin-top: 5px;">${story.título}</h4>
+                            <p>${story.resumen}</p>
+                        </div>
+                        <button class="btn-read">Read Story 📖</button>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+
+            document.getElementById('rooms-screen').style.display = 'none';
+            document.getElementById('stories-screen').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function backToStories() {
+            document.getElementById('reader-screen').style.display = 'none';
+            document.getElementById('stories-screen').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function openStory(storyId) {
+            currentStoryId = storyId;
+            const roomData = ROOMS_DATA[currentRoomKey];
+            const story = roomData.stories.find(s => s.id === storyId);
+
+            document.getElementById('reader-story-title').innerText = story.título;
+            
+            // Image in reader
+            const imgContainer = document.getElementById('reader-image-container');
+            imgContainer.innerHTML = story.imagen;
+
+            // Paragraphs
+            const textContainer = document.getElementById('reader-text-container');
+            textContainer.innerHTML = '';
+            story.párrafos.forEach(p => {
+                const paragraph = document.createElement('p');
+                paragraph.innerText = p;
+                paragraph.style.fontSize = currentFontSize + 'rem';
+                textContainer.appendChild(paragraph);
+            });
+
+            document.getElementById('stories-screen').style.display = 'none';
+            document.getElementById('reader-screen').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function changeFontSize(amount) {
+            currentFontSize += amount * 0.1;
+            if (currentFontSize < 1.0) currentFontSize = 1.0;
+            if (currentFontSize > 1.8) currentFontSize = 1.8;
+
+            const paragraphs = document.querySelectorAll('.story-text-content p');
+            paragraphs.forEach(p => {
+                p.style.fontSize = currentFontSize + 'rem';
+            });
+        }
+    </script>
+</body>
+</html>
